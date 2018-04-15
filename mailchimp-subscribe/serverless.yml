@@ -1,0 +1,28 @@
+service: mailchimp-subscribe
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  environment:
+    LIST_ID: ${file(secrets.yml):LIST_ID}
+    API_KEY: ${file(secrets.yml):API_KEY}
+    REDIRECT_URL: ${file(secrets.yml):REDIRECT_URL}
+    INTEREST_ID: ${file(secrets.yml):INTEREST_ID}
+    NEWSLETTER_INTEREST_ID: ${file(secrets.yml):NEWSLETTER_INTEREST_ID}
+    HONEYPOT_ID: ${file(secrets.yml):HONEYPOT_ID}
+
+package:
+  exclude:
+    - secrets.yml
+
+functions:
+  mailchimp-subscribe:
+    memorySize: 1024
+    timeout: 30
+    handler: handler.handler
+    events:
+      - http:
+          path: /
+          method: post
+          cors: true
